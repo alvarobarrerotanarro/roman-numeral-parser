@@ -25,7 +25,7 @@ public class TestRomanNumeral {
         }
 
         System.out.println(fails < 1 ? "No errors !" : failNumerals);
-        System.out.printf("Success rate: %.2f%%\n", 100 - ((double) fails / ATTEMPTS * 100));
+        System.out.printf("%d Roman numerals were parsed with a success rate of %.2f%%\n", ATTEMPTS, 100 - ((double) fails / ATTEMPTS * 100));
     }
 
     public static void main(String args[]) {

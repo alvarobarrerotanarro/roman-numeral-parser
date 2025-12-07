@@ -6,9 +6,6 @@ public class RomanNumeral {
 
     public RomanNumeral(String numeral) {
         this.numeral = numeral;
-        if (!validate()) {
-            throw new RomanNumeralFormatError(numeral);
-        }
     }
 
     public static RomanNumeral fromArabic(short number) throws RomanNumeralRangeError {
@@ -28,7 +25,7 @@ public class RomanNumeral {
         return new RomanNumeral(numeral);
     }
 
-    private boolean validate() {
+    public boolean validate() {
         // Parses the values.
         short values[] = new short[numeral.length()];
         for (int i = 0; i < values.length; i++) {
@@ -42,11 +39,17 @@ public class RomanNumeral {
         current = values[0];
 
         for (int i = 1; !fail && i < values.length; i++) {
+            // Update the prev numeral.
             prev = current;
             current = values[i];
 
+            // Bad numeral check.
+            if (!Internal.isValidNumeral(prev)) {
+                fail = true;
+            }
+
             // Bad substraction check.
-            if (
+            else if (
                     current > prev &&
                             !(
                                     current / Internal.getProportionalScale(current) == 5 &&
@@ -80,6 +83,11 @@ public class RomanNumeral {
      * @return The Roman numeral as a short data type.
      */
     public short parse() {
+        // Validate.
+        if (!validate()) {
+            throw new RomanNumeralFormatError(numeral);
+        }
+
         // Parses the values.
         short values[] = new short[numeral.length()];
         short acc = 0;

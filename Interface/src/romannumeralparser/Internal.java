@@ -9,6 +9,8 @@ public class Internal {
             1, 5, 10, 50, 100, 500, 1000
     };
 
+    /* Math utilities. */
+
     public static int countDigits(int val) {
         int aux = val;
         int digits = 0;
@@ -48,6 +50,8 @@ public class Internal {
         return n;
     }
 
+    /* Numeral utilities. */
+
     public static int[] getNumeralBoundaries(short number) {
         boolean found = false;
         int bounds[] = {0, 1};
@@ -62,18 +66,28 @@ public class Internal {
         return bounds;
     }
 
-    public static char getNumeralChar(short number) {
-        int pos = 0;
+    public static boolean isValidNumeral(short number) {
         boolean found = false;
 
         for (int i = 0; !found && i < NUMERALS_VAL.length; i++) {
             if (NUMERALS_VAL[i] == number) {
-                pos = i;
                 found = true;
             }
         }
 
-        return NUMERALS[pos];
+        return found;
+    }
+
+    public static char getNumeralChar(short number) {
+        int pos = -1;
+
+        for (int i = 0; pos < 0 && i < NUMERALS_VAL.length; i++) {
+            if (NUMERALS_VAL[i] == number) {
+                pos = i;
+            }
+        }
+
+        return NUMERALS[Math.max(pos, 0)];
     }
 
     public static int getNumeralPos(short numeral) {
@@ -91,6 +105,8 @@ public class Internal {
         int pos = number / scale;
         return pos == 4 || pos == 9;
     }
+
+    /* Parsing utilities. */
 
     public static String scaledArabicToNumeral(short number) {
         String numeral = "";

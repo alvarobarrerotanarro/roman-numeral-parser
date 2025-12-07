@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="RomanNumeralParser">
+    <output-path>$PROJECT_DIR$/Interface/out/artifacts/RomanNumeralParser</output-path>
+    <root id="root">
+      <element id="archive" name="RomanNumeralParser.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/Interface/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="Interface" />
+      </element>
+    </root>
+  </artifact>
+</component>
