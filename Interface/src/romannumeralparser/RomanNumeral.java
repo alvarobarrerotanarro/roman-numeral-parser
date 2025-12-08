@@ -1,13 +1,25 @@
 package romannumeralparser;
 
+/**
+ * Allows the conversion between  Roman numerals to Arabic ones and vice versa.
+ */
 public class RomanNumeral {
 
     private final String numeral;
 
+    /**
+     * @param numeral Any valid Roman numeral within the interval [I, MMMCMXCIX] (that is [1, 3999]). If a wrong Roman numeral is provided, it will not throw until you try to parse the numeral; luckily you can use the validate() method before parsing, so you can ensure weather the numeral is correctly written before parsing.
+     */
     public RomanNumeral(String numeral) {
         this.numeral = numeral;
     }
 
+    /**
+     * You may want to parse an Arabic numeral to a Roman numeral by using this method.
+     * @param number Any number within the interval [1, 3999].
+     * @return A Roman numeral that represents number.
+     * @throws RomanNumeralRangeError In case number is out of the interval.
+     */
     public static RomanNumeral fromArabic(short number) throws RomanNumeralRangeError {
         String numeral = "";
 
@@ -19,17 +31,74 @@ public class RomanNumeral {
         // Concatenate the whole numeral parts.
         short split[] = Internal.summationSplit(number);
         for (short n : split) {
-            numeral += Internal.scaledArabicToNumeral(n);
+            numeral += scaledArabicToNumeral(n);
         }
 
         return new RomanNumeral(numeral);
     }
 
+    /* Parsing utilities */
+
+    /**
+     * Allows to calculate weather if number will need to be represented using Roman numeral substraction. For instance: 4 will return true since it is represented as IV (5 - 1).
+     * Only the first digit of the given number is relevant, the remaining are ignored.
+     * @param number Any integer number within the interval [1, 3999].
+     * @return true in case Roman numeral substraction is needed to represent the number, false otherwise.
+     */
+    private static boolean requiresNumeralSubstraction(short number) {
+        int scale = Internal.getProportionalScale(number);
+        int pos = number / scale;
+        return pos == 4 || pos == 9;
+    }
+
+    /**
+     * Allows to parse a given Arabic number to a Roman number. Only the first digit of the number is relevant (it assumes it will receive on of the addends returned by the summationSplit() method). Take for instance the number 742, it will ignore the last two digits and multiply the result by its proportional scale (700) and finaly parse the number, so the result will be 'DCC'.
+     * @param number Any integer number within the interval [1, 3999].
+     * @return A Roman numeral representation of the first digit of number * by its proportional scale.
+     */
+    private static String scaledArabicToNumeral(short number) {
+        String numeral = "";
+        short numerals[] = Internal.getNumeralBoundaries(number);
+
+        boolean needsSubstraction = requiresNumeralSubstraction(number);
+
+        short scale = Internal.getProportionalScale(number);
+        int factor = number / scale;
+        int reps;
+
+        // Trivial numerals.
+        if (number < 1) {
+            return numeral;
+        } else if (number > 999) {
+            numeral += "M".repeat((number / 1000) % 10);
+            return numeral;
+        } else if (numerals[1] == number) {
+            numeral = String.valueOf(Internal.getNumeralChar(numerals[1]));
+            return numeral;
+        }
+
+        // Concatenate the numerals.
+        if (needsSubstraction) {
+            reps = Math.abs(numerals[1] - (factor * scale)) / scale;
+            numeral = String.valueOf(Internal.getNumeralChar(scale)).repeat(reps) + Internal.getNumeralChar(numerals[1]);
+        } else {
+            reps = Math.abs(numerals[0] - (factor * scale)) / scale;
+            numeral = Internal.getNumeralChar(numerals[0]) + String.valueOf(Internal.getNumeralChar(scale)).repeat(reps);
+        }
+
+        return numeral;
+    }
+
+
+    /**
+     * Validates the Roman numeral format.
+     * @return true in case the validation is successful, false otherwise.
+     */
     public boolean validate() {
         // Parses the values.
         short values[] = new short[numeral.length()];
         for (int i = 0; i < values.length; i++) {
-            values[i] = Internal.parseSingleNumeral(numeral.charAt(i));
+            values[i] = Internal.getNumeralValue(numeral.charAt(i));
         }
 
         // Checks for errors in format.
@@ -78,11 +147,11 @@ public class RomanNumeral {
     }
 
     /**
-     * Parses the Roman numeral to an Arabic representation of type short.
-     *
+     * Parses the Roman numeral to Arabic format, that is, a short data type. Before parsing the numeral a format validation layer checks the format.
      * @return The Roman numeral as a short data type.
+     * @throws RomanNumeralFormatError In case the validation layer detected a format error.
      */
-    public short parse() {
+    public short parse() throws RomanNumeralFormatError {
         // Validate.
         if (!validate()) {
             throw new RomanNumeralFormatError(numeral);
@@ -93,7 +162,7 @@ public class RomanNumeral {
         short acc = 0;
 
         for (int i = 0; i < values.length; i++) {
-            values[i] = Internal.parseSingleNumeral(numeral.charAt(i));
+            values[i] = Internal.getNumeralValue(numeral.charAt(i));
         }
 
         // Finds the valleys ands makes then negative.

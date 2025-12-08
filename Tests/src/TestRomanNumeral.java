@@ -28,6 +28,9 @@ public class TestRomanNumeral {
         System.out.printf("%d Roman numerals were parsed with a success rate of %.2f%%\n", ATTEMPTS, 100 - ((double) fails / ATTEMPTS * 100));
     }
 
+    /**
+     * Iterates across the interval Roman numerals can represent numbers, parses each number to Roman numeral and then unparses it to the original one. If both doesn't match it is considered an error.
+     */
     public static void main(String args[]) {
         test();
     }

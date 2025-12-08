@@ -11,6 +11,11 @@ public class Internal {
 
     /* Math utilities. */
 
+    /**
+     * Allows to cunt the amount of digits for given number.
+     * @param val Any integer number.
+     * @return The number of digits for val.
+     */
     public static int countDigits(int val) {
         int aux = val;
         int digits = 0;
@@ -22,6 +27,12 @@ public class Internal {
         return digits;
     }
 
+    /**
+     * Allows to break down the given val in different addends as in the form:
+     * 154 = 100 + 50 + 4
+     * @param val Any integer number.
+     * @return An array of addends.
+     */
     public static short[] summationSplit(int val) {
         int digitCount = countDigits(val);
         short digits[] = new short[digitCount];
@@ -50,22 +61,33 @@ public class Internal {
         return n;
     }
 
-    /* Numeral utilities. */
+    /* Single numeral utilities. */
 
-    public static int[] getNumeralBoundaries(short number) {
+    /**
+     * Allows to calculate the Roman numeral boundaries for the given number.
+     * The number 47, for instance would be within the X and L bounds.
+     * @param number Any integer number < 1000.
+     * @return An array with the values of the Roman numerals, being the first position the left boundary and last one the right boundary.
+     */
+    public static short[] getNumeralBoundaries(short number) {
         boolean found = false;
-        int bounds[] = {0, 1};
+        short bounds[] = {0, 1};
 
         for (int i = 0; !found && i < NUMERALS_VAL.length - 1; i++) {
             if (NUMERALS_VAL[i] < number && number <= NUMERALS_VAL[i + 1]) {
-                bounds[0] = i;
-                bounds[1] = i + 1;
+                bounds[0] = NUMERALS_VAL[i];
+                bounds[1] = NUMERALS_VAL[i + 1];
             }
         }
 
         return bounds;
     }
 
+    /**
+     * Checks weather the given number may be represented using just one character from the Roman numerals.
+     * @param number Any integer number.
+     * @return true in case it does, false otherwise.
+     */
     public static boolean isValidNumeral(short number) {
         boolean found = false;
 
@@ -78,76 +100,51 @@ public class Internal {
         return found;
     }
 
-    public static char getNumeralChar(short number) {
+    /**
+     * Allows to get the position for number in the Roman numerals scale. Number should be the value for an existing Roman numeral [1, 5, 10, ... 1000], otherwise it will always return 0.
+     * @param number A Roman numeral value [1, 5, 10 .... 1000].
+     * @return The position for number in the Roman numerals scale.
+     */
+    public static int getNumeralPos(short number) {
         int pos = -1;
-
         for (int i = 0; pos < 0 && i < NUMERALS_VAL.length; i++) {
             if (NUMERALS_VAL[i] == number) {
-                pos = i;
-            }
-        }
-
-        return NUMERALS[Math.max(pos, 0)];
-    }
-
-    public static int getNumeralPos(short numeral) {
-        int pos = -1;
-        for (int i = 0; pos < 0 && i < NUMERALS_VAL.length; i++) {
-            if (NUMERALS_VAL[i] == numeral) {
                 pos = i;
             }
         }
         return Math.max(pos, 0);
     }
 
-    public static boolean requiresNumeralSubstraction(short number) {
-        int scale = Internal.getProportionalScale(number);
-        int pos = number / scale;
-        return pos == 4 || pos == 9;
-    }
-
-    /* Parsing utilities. */
-
-    public static String scaledArabicToNumeral(short number) {
-        String numeral = "";
-        int numerals[] = getNumeralBoundaries(number);
-
-        boolean needsSubstraction = requiresNumeralSubstraction(number);
-
-        short scale = Internal.getProportionalScale(number);
-        int factor = number / scale;
-        int reps;
-
-        // Trivial numerals.
-        if (number < 1) {
-            return numeral;
-        } else if (number > 999) {
-            numeral += "M".repeat((number / 1000) % 10);
-            return numeral;
-        } else if (NUMERALS_VAL[numerals[1]] == number) {
-            numeral = String.valueOf(NUMERALS[numerals[1]]);
-            return numeral;
-        }
-
-        // Concatenate the numerals.
-        if (needsSubstraction) {
-            reps = Math.abs(NUMERALS_VAL[numerals[1]] - (factor * scale)) / scale;
-            numeral = String.valueOf(getNumeralChar(scale)).repeat(reps) + NUMERALS[numerals[1]];
-        } else {
-            reps = Math.abs(NUMERALS_VAL[numerals[0]] - (factor * scale)) / scale;
-            numeral = NUMERALS[numerals[0]] + String.valueOf(getNumeralChar(scale)).repeat(reps);
-        }
-
-        return numeral;
-    }
-
-    public static short parseSingleNumeral(char numeral) {
+    /**
+     * Allows to get the position for numeral in the Roman numerals scale. Numeral should be the character for an existing Roman numeral [I, V, X, ... M], otherwise it will always return 0.
+     * @param numeral A Roman numeral character [I, V, X .... M].
+     * @return The position for numeral in the Roman numerals scale.
+     */
+    public static int getNumeralPos(char numeral) {
         int pos = -1;
-        for (int i = 0; i < NUMERALS.length; i++) {
-            if (NUMERALS[i] == numeral)
+        for (int i = 0; pos < 0 && i < NUMERALS.length; i++) {
+            if (NUMERALS[i] == numeral) {
                 pos = i;
+            }
         }
+        return Math.max(pos, 0);
+    }
 
-        return NUMERALS_VAL[Math.max(pos, 0)];
+    /**
+     * Allows to get the character representation for number. Number should be the value for an existing Roman numeral [1, 5, 10 ... 1000], otherwise it will always return 'I'.
+     * @param number A Roman numeral value [1, 5, 10 ... 1000]
+     * @return The character representation of number.
+     */
+    public static char getNumeralChar(short number) {
+        return NUMERALS[getNumeralPos(number)];
+    }
+
+    /**
+     * Allows to get the value from the given Roman numeral character. If it wasn't found always return 1.
+     * @param numeral Any valid Roman numeral character.
+     * @return The associated value with numeral.
+     */
+    public static short getNumeralValue(char numeral) {
+        return NUMERALS_VAL[getNumeralPos(numeral)];
     }
 }
