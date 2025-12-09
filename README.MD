@@ -90,6 +90,18 @@ Si preferimos tener una coleccion a nuestro alcande donde tengamos todos los num
 
 
 ```java
+import romannumeralparser.RomanNumeral;
+import romannumeralparser.RomanNumeralParser;
+
+import java.util.List;
+
+public class Main {
+    public static void main(String args[]) {
+        RomanNumeralParser parser = new RomanNumeralParser("CDV", "MMIX", "LI");
+        List<Short> result = parser.asParsedList();
+        System.out.println(result.indexOf((short)51)); //  2
+    }
+}
 ```
 
 > Es de esperar que cualquier error de formato en uno de los muchos posibles elementos causaria una excepcion en el programa.
@@ -102,15 +114,11 @@ He aqui un metodo estatico "fabrica" para un `RomanNumeral` desde un un tipo de 
 
 ```java
 import romannumeralparser.RomanNumeral;
-import romannumeralparser.RomanNumeralParser;
-
-import java.util.List;
 
 public class Main {
     public static void main(String args[]) {
-        RomanNumeralParser parser = new RomanNumeralParser("CDV", "MMIX", "LI");
-        List<Short> result = parser.asParsedList();
-        System.out.println(result.indexOf((short)51)); //  2
+        RomanNumeral numeral = RomanNumeral.fromArabic(3999);
+        System.out.println(numeral);
     }
 }
 ```
