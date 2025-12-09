@@ -2,7 +2,7 @@
 
 Roman numeral parser es una pequeña libreria interfaz de programacion escrita en Java que pretende facilitar la conversion entre numeros Arabes a Romanos y viceversa.
 
-> La libreria esta diseñada para tener un facil uso ademas de validar el formato numeros introducimos.
+> La libreria esta diseñada para tener un facil uso ademas de validar el formato de los numeros que introducimos.
 
 La clase principal es `RomanNumeral`, que esta diseñada para ser versatil y soportar conversiones bidireccionales; por otro lado tambien existe `RomanNumeralParser`, que es una implementacion de un iterable, esta ultima clase esta pensada para recorrer cada numero romano y convertirlo.
 
@@ -50,6 +50,50 @@ public class Main {
 }
 ```
 
+## Interpretar varios numeros Romanos
+
+Podemos convertir varios numeros Romanos comprendidos en un array e iterar sobre el resultado de cada conversion. Para ello emplearemos la clase `RomanNumeralParser`, cuyo constructor recibe un array de numeros Romanos como cadenas de caracteres; no obstante tambien es posible indicar los numeros como parametros independientes.
+
+```java
+import romannumeralparser.RomanNumeral;
+import romannumeralparser.RomanNumeralParser;
+
+import java.util.Iterator;
+
+public class Main {
+    public static void main(String args[]) {
+        /**
+         * Formas de construir los parser.
+         */
+        
+        String numerals[] = {"XII", "VIII", "CM"};
+        RomanNumeralParser parser = new RomanNumeralParser(numerals);
+        
+        RomanNumeralParser otherParser = new RomanNumeralParser("CDV", "MMIX", "LI");
+       
+        /**
+         * Formas de recorrer los parser.
+         */
+        
+        for (Iterator<Short> it = parser.iterator(); it.hasNext(); ) {
+            System.out.println(it.next());
+        }
+        
+        for (short num : otherParser) {
+            System.out.println(num); 
+        }
+    }
+}
+```
+
+Si preferimos tener una coleccion a nuestro alcande donde tengamos todos los numeros Romanos ya parseados, podemos utilizar el metodo `asParsedList()`. Este metodo se encarga de consumir todo el iterador, es decir, convertir todos los volores y guardarlos en una lista.
+
+
+```java
+```
+
+> Es de esperar que cualquier error de formato en uno de los muchos posibles elementos causaria una excepcion en el programa.
+
 ## Convertir un numero Arabe en un numero Romano
 
 La libreria considera que un numerao Arabe puede ser representado por cualquier valor numerico compatible con el tipo de dato `short`; por lo tanto, para qué generar una cadena de caracteres cuando lo mismo buscamos realizar operaciones aritmeticas.
@@ -58,11 +102,15 @@ He aqui un metodo estatico "fabrica" para un `RomanNumeral` desde un un tipo de 
 
 ```java
 import romannumeralparser.RomanNumeral;
+import romannumeralparser.RomanNumeralParser;
+
+import java.util.List;
 
 public class Main {
     public static void main(String args[]) {
-        RomanNumeral numeral = RomanNumeral.fromArabic(3999);
-        System.out.println(numeral);
+        RomanNumeralParser parser = new RomanNumeralParser("CDV", "MMIX", "LI");
+        List<Short> result = parser.asParsedList();
+        System.out.println(result.indexOf((short)51)); //  2
     }
 }
 ```

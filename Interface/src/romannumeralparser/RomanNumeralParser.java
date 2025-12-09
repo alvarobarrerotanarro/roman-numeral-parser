@@ -1,8 +1,6 @@
 package romannumeralparser;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 class RomanNumeralParserIterator implements Iterator<Short> {
    private final String numerals[];
@@ -41,10 +39,22 @@ public class RomanNumeralParser implements Iterable<Short> {
 
     /**
      * Parsers an array or a successive list of Roman numerals as arguments.
-     * @param numerals An array of successive list of arguments of type String.
+     * @param numerals An array or successive list of arguments of type String.
      */
     public RomanNumeralParser(String ...numerals) {
         it = new RomanNumeralParserIterator(numerals);
+    }
+
+    /**
+     * Consumes the iterator and returns a list with all the numerals parsed.
+     * @return A list with the parsed version of the Roman numerals.
+     */
+    public List<Short> asParsedList() {
+        List<Short> numerals = new ArrayList<>();
+        while (it.hasNext()) {
+            numerals.add(it.next());
+        }
+        return numerals;
     }
 
     public Iterator<Short> iterator() {

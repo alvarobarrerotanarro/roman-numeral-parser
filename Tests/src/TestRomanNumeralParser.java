@@ -1,6 +1,8 @@
 import romannumeralparser.RomanNumeral;
 import romannumeralparser.RomanNumeralParser;
 
+import java.util.List;
+
 public class TestRomanNumeralParser {
 
     public static final int ATTEMPTS = 3999;
