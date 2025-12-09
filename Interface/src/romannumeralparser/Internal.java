@@ -101,6 +101,23 @@ public class Internal {
     }
 
     /**
+     * Checks weather the given numeral character belongs to Roman numerals.
+     * @param numeral Any character.
+     * @return true in case it does, false otherwise.
+     */
+    public static boolean isValidNumeral(char numeral) {
+        boolean found = false;
+
+        for (int i = 0; !found && i < NUMERALS.length; i++) {
+            if (NUMERALS[i] == numeral) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    /**
      * Allows to get the position for number in the Roman numerals scale. Number should be the value for an existing Roman numeral [1, 5, 10, ... 1000], otherwise it will always return 0.
      * @param number A Roman numeral value [1, 5, 10 .... 1000].
      * @return The position for number in the Roman numerals scale.

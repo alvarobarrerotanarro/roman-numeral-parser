@@ -5,6 +5,16 @@ package romannumeralparser;
  */
 public class RomanNumeral {
 
+    /**
+     * The greatest value that may be represented using Roman numerals.
+     */
+    public static final int MAX_VALUE = 3999;
+
+    /**
+     * The smallest value that may be represented using Roman numerls.
+     */
+    public static final int MIN_VALUE = 1;
+
     private final String numeral;
 
     /**
@@ -95,14 +105,28 @@ public class RomanNumeral {
      * @return true in case the validation is successful, false otherwise.
      */
     public boolean validate() {
-        // Parses the values.
+        boolean fail = false;
+
+        // Parses the values and checks for bad numerals.
+        if (numeral.isEmpty()) {
+            fail = true;
+            return !fail;
+        }
+
         short values[] = new short[numeral.length()];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = Internal.getNumeralValue(numeral.charAt(i));
+
+        for (int i = 0; !fail && i < values.length; i++) {
+            if (!Internal.isValidNumeral(numeral.charAt(i))) {
+               fail = true;
+            } else {
+                values[i] = Internal.getNumeralValue(numeral.charAt(i));
+            }
+        }
+        if (fail) {
+            return !fail;
         }
 
         // Checks for errors in format.
-        boolean fail = false;
         int counter = 0;
         short prev, current;
         current = values[0];
